@@ -1,0 +1,11 @@
+https://www.youtube.com/watch?v=gpXF9heaw8k
+https://www.youtube.com/watch?v=gpXF9heaw8k
+https://expo.dev/accounts/fabianmeneses56/projects/learn-english-with-ai/builds/75981ae3-8f7f-43f8-9930-4f24e9723937
+https://docs.expo.dev/develop/development-builds/share-with-your-team/
+https://github.com/chelseafarley/expo-speech-to-text/blob/main/App.js
+https://github.com/react-native-voice/voice
+https://blog.logrocket.com/build-transcription-app-react-native/
+
+https://github.com/shujakhalid19/Chatapp/blob/main/src/styles/main.js
+https://reactnativeexample.com/tag/chat/
+
