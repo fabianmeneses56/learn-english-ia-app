@@ -9,3 +9,12 @@ https://blog.logrocket.com/build-transcription-app-react-native/
 https://github.com/shujakhalid19/Chatapp/blob/main/src/styles/main.js
 https://reactnativeexample.com/tag/chat/
 
+
+
+https://www.google.com/search?q=ERROR+%5BTypeError%3A+Network+request+failed%5D&rlz=1C1UEAD_esCO972CO972&oq=ERROR+%5BTypeError%3A+Network+request+failed%5D&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQABiABDIICAIQABgWGB4yCAgDEAAYFhgeMggIBBAAGBYYHjIICAUQABgWGB4yCAgGEAAYFhgeMggIBxAAGBYYHjIICAgQABgWGB4yCAgJEAAYFhge0gEHNjczajBqN6gCALACAA&sourceid=chrome&ie=UTF-8
+https://www.google.com/search?q=%40react-native-voice%2Fvoice+silence+time&rlz=1C1UEAD_esCO972CO972&ei=syWBZLibEtKqqtsP1dGCsAs&ved=0ahUKEwj4wIyMurL_AhVSlWoFHdWoALYQ4dUDCA8&uact=5&oq=%40react-native-voice%2Fvoice+silence+time&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEOgoIABBHENYEELADOgcIABATEIAEOggIABAWEB4QCjoFCCEQoAE6CAghEBYQHhAdSgQIQRgAUN8DWPovYK47aARwAXgBgAGSAogB-BaSAQYwLjE0LjKYAQCgAQHAAQHIAQg&sclient=gws-wiz-serp
+https://stackoverflow.com/questions/75742318/react-native-voice-speech-to-text-not-working-in-android
+https://stackoverflow.com/questions/74922152/how-to-cancel-stop-function-in-react-native-voice
+https://github.com/react-native-voice/voice/issues/107
+https://github.com/react-native-voice/voice#example
+https://github.com/react-native-voice/voice/blob/master/example/src/VoiceTest.tsx

@@ -21,36 +21,6 @@ import ChatScreen from './views/ChatScreen'
 // </View> */}
 
 export default function App() {
-  const [started, setStarted] = useState(false)
-  const [results, setResults] = useState([])
-
-  useEffect(() => {
-    Voice.onSpeechError = onSpeechError
-    Voice.onSpeechResults = onSpeechResults
-
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners)
-    }
-  }, [])
-
-  const startSpeechToText = async () => {
-    await Voice.start('en-NZ')
-    setStarted(true)
-  }
-
-  const stopSpeechToText = async () => {
-    await Voice.stop()
-    setStarted(false)
-  }
-
-  const onSpeechResults = result => {
-    setResults(result.value)
-  }
-
-  console.log(results)
-  const onSpeechError = error => {
-    console.log(error)
-  }
   return (
     <View style={styles.container}>
       <ChatScreen />

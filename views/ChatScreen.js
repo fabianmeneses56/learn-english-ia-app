@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   StyleSheet,
   Dimensions,
@@ -10,85 +10,31 @@ import {
   TextInput,
   KeyboardAvoidingView
 } from 'react-native'
+import FontAwesome from '@expo/vector-icons/FontAwesome'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import Voice from '@react-native-voice/voice'
+
 import styles from '../styles/main'
+
 const DATA_MESSAGES = [
   {
     id: 1,
     text: 'Hi',
     sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
+    img: require('../assets/ChatGPT_logo.png')
   },
   {
     id: 1,
     text: 'Hello',
     sender: 'Me',
-    img: 'https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png'
-  },
-  {
-    id: 1,
-    text: 'To style the header in React Navigation use a header object inside the navigationOptions object',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
-  },
-  {
-    id: 1,
-    text: 'Hi',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
-  },
-  {
-    id: 1,
-    text: 'Hello',
-    sender: 'Me',
-    img: 'https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png'
-  },
-  {
-    id: 1,
-    text: 'To style the header in React Navigation use a header object inside the navigationOptions object',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
-  },
-  {
-    id: 1,
-    text: 'Hi',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
-  },
-  {
-    id: 1,
-    text: 'Hello',
-    sender: 'Me',
-    img: 'https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png'
-  },
-  {
-    id: 1,
-    text: 'To style the header in React Navigation use a header object inside the navigationOptions object',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
-  },
-  {
-    id: 1,
-    text: 'Hi',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
-  },
-  {
-    id: 1,
-    text: 'Hello',
-    sender: 'Me',
-    img: 'https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png'
-  },
-  {
-    id: 1,
-    text: 'To style the header in React Navigation use a header object inside the navigationOptions object',
-    sender: 'Shuja Khalid',
-    img: 'https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/09/09aa93bad4aef38579ab260817f2a51fa194637c.jpg'
+    img: require('../assets/user.png')
   }
 ]
 
 const { width, height } = Dimensions.get('window')
 const Chats = ({ item }) => {
   var state = item.sender === 'Me'
+
   return (
     <View
       style={[
@@ -103,7 +49,7 @@ const Chats = ({ item }) => {
       <View style={state ? styles.pdlt10 : styles.pdrt10}>
         <Image
           style={{ width: 40, height: 40, borderRadius: 50 }}
-          source={{ uri: item.img }}
+          source={item.img}
         />
       </View>
       <View>
@@ -117,45 +63,128 @@ const Chats = ({ item }) => {
   )
 }
 
+// const headerComponent = () => (
+//   <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.94)' }}>
+//     <View
+//       style={[
+//         { paddingBottom: 20 },
+//         styles.bdbtm4,
+//         styles.bdGrey,
+//         styles.pdlt10,
+//         styles.pdrt10,
+//         styles.frow,
+//         styles.jspaceBw
+//       ]}
+//     >
+//       <View>
+//         <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{'algo aca'}</Text>
+//         <Text style={[styles.f18, styles.clBl]}>Online</Text>
+//       </View>
+//     </View>
+//   </View>
+// )
+
+// {text ? (
+//   <TouchableOpacity onPress={handleSend}>
+//     <Text style={[styles.fb, styles.clBl]}>Send</Text>
+//   </TouchableOpacity>
+// ) : (
+//   <>
+//     {!started && (
+//       <TouchableOpacity onPress={startSpeechToText}>
+//         <FontAwesome name='microphone' size={25} />
+//       </TouchableOpacity>
+//     )}
+//     {started && (
+//       <TouchableOpacity onPress={stopSpeechToText}>
+//         <Ionicons name='send' size={25} />
+//       </TouchableOpacity>
+//     )}
+//   </>
+// )}
 const ChatScreen = () => {
-  const [messageArray, setMessageArray] = useState(DATA_MESSAGES ?? [])
-  const [text, onChangeText] = React.useState('')
-  const _renderMessages = ({ item }) => {
-    return <Chats item={item} />
+  const [messageArray, setMessageArray] = useState([])
+  const [text, onChangeText] = useState('')
+
+  const [started, setStarted] = useState(false)
+  const [gptResponse, setGptResponse] = useState('')
+  // const [results, setResults] = useState([])
+
+  useEffect(() => {
+    Voice.onSpeechError = onSpeechError
+    Voice.onSpeechResults = onSpeechResults
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners)
+    }
+  }, [])
+
+  const startSpeechToText = async () => {
+    await Voice.start('en-NZ')
+    setStarted(true)
   }
-
-  const headerComponent = () => (
-    <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.94)' }}>
-      <View
-        style={[
-          { paddingBottom: 20 },
-          styles.bdbtm4,
-          styles.bdGrey,
-          styles.pdlt10,
-          styles.pdrt10,
-          styles.frow,
-          styles.jspaceBw
-        ]}
-      >
-        <View>
-          <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{'algo aca'}</Text>
-          <Text style={[styles.f18, styles.clBl]}>Online</Text>
-        </View>
-      </View>
-    </View>
-  )
-
   const handleSend = () => {
+    onChangeText('')
+    setStarted(false)
     setMessageArray(prev => [
       ...prev,
       {
         id: 1,
         text: text,
         sender: 'Me',
-        img: 'https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png'
+        img: require('../assets/user.png')
       }
     ])
+    // fetch('https://motivate-dev.vercel.app/api/englishia', {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify({ userResponse: text })
+    // })
+    //   .then(response => response.json())
+    //   .then(res => {
+    //     console.log(res)
+    //     setGptResponse(res.result)
+    //     setMessageArray(prev => [
+    //       ...prev,
+    //       {
+    //         id: 1,
+    //         text: res.result,
+    //         sender: 'Shuja Khalid',
+    //         img: require('../assets/ChatGPT_logo.png')
+    //       }
+    //     ])
+    //   })
+    //   .catch(err => {
+    //     // setLoading(false)
+    //     // setResult('Error...')
+    //     console.log('ERROR', err)
+    //   })
   }
+  const stopSpeechToText = async () => {
+    await Voice.stop()
+    setStarted(false)
+    handleSend()
+  }
+
+  const onSpeechResults = result => {
+    console.log('ACA', result)
+    // setResults(result.value[0])
+    onChangeText(result.value[0])
+  }
+
+  // console.log(results)
+  const onSpeechError = error => {
+    console.log(error)
+  }
+
+  const _renderMessages = ({ item }) => {
+    return <Chats item={item} />
+  }
+
+  console.log(gptResponse)
 
   return (
     <KeyboardAvoidingView
@@ -168,8 +197,8 @@ const ChatScreen = () => {
           data={messageArray}
           renderItem={_renderMessages}
           keyExtractor={(item, index) => String(index)}
-          ListHeaderComponent={headerComponent}
-          stickyHeaderIndices={[0]}
+          // ListHeaderComponent={headerComponent}
+          // stickyHeaderIndices={[0]}
           contentContainerStyle={{ flexGrow: 1, backgroundColor: '#D3D3D388' }}
         />
         <View
@@ -178,12 +207,18 @@ const ChatScreen = () => {
             backgroundColor: '#FFF',
             borderTopColor: '#d4d4d4',
             borderTopWidth: 1,
-            paddingTop: 15,
+            paddingTop: 5,
             paddingBottom: 5
           }}
         >
           <View
-            style={[styles.frow, styles.jspaceBw, styles.pdrt10, styles.pdlt10]}
+            style={[
+              styles.frow,
+              styles.jspaceBw,
+              styles.pdrt10,
+              styles.pdlt10,
+              { display: 'flex', alignItems: 'center' }
+            ]}
           >
             <TextInput
               onChangeText={onChangeText}
@@ -195,9 +230,21 @@ const ChatScreen = () => {
                 width: width / 1.3
               }}
             />
-            <TouchableOpacity onPress={handleSend}>
-              <Text style={[styles.fb, styles.clBl]}>Send</Text>
-            </TouchableOpacity>
+
+            {
+              <>
+                {!started && (
+                  <TouchableOpacity onPress={startSpeechToText}>
+                    <FontAwesome name='microphone' size={25} />
+                  </TouchableOpacity>
+                )}
+                {started && (
+                  <TouchableOpacity onPress={stopSpeechToText}>
+                    <Ionicons name='send' size={25} />
+                  </TouchableOpacity>
+                )}
+              </>
+            }
           </View>
         </View>
       </>
