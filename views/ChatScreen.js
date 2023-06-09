@@ -19,15 +19,9 @@ import styles from '../styles/main'
 const DATA_MESSAGES = [
   {
     id: 1,
-    text: 'Hi',
-    sender: 'Shuja Khalid',
+    text: "Hello, I'm ChatGPT, an English language expert. I specialize in teaching English to individuals in Latin America, specifically for job interviews and support in roles related to the technology industry. How can I assist you today?",
+    sender: 'ChatGPT',
     img: require('../assets/ChatGPT_logo.png')
-  },
-  {
-    id: 1,
-    text: 'Hello',
-    sender: 'Me',
-    img: require('../assets/user.png')
   }
 ]
 
@@ -103,7 +97,7 @@ const Chats = ({ item }) => {
 //   </>
 // )}
 const ChatScreen = () => {
-  const [messageArray, setMessageArray] = useState([])
+  const [messageArray, setMessageArray] = useState(DATA_MESSAGES)
   const [text, onChangeText] = useState('')
 
   const [started, setStarted] = useState(false)
@@ -120,7 +114,7 @@ const ChatScreen = () => {
   }, [])
 
   const startSpeechToText = async () => {
-    await Voice.start('en-NZ')
+    await Voice.start('en-US')
     setStarted(true)
   }
   const handleSend = () => {
@@ -152,7 +146,7 @@ const ChatScreen = () => {
     //       {
     //         id: 1,
     //         text: res.result,
-    //         sender: 'Shuja Khalid',
+    //         sender: 'ChatGPT',
     //         img: require('../assets/ChatGPT_logo.png')
     //       }
     //     ])
@@ -166,7 +160,7 @@ const ChatScreen = () => {
   const stopSpeechToText = async () => {
     await Voice.stop()
     setStarted(false)
-    handleSend()
+    // handleSend()
   }
 
   const onSpeechResults = result => {
@@ -184,7 +178,7 @@ const ChatScreen = () => {
     return <Chats item={item} />
   }
 
-  console.log(gptResponse)
+  // console.log(gptResponse)
 
   return (
     <KeyboardAvoidingView
@@ -204,47 +198,86 @@ const ChatScreen = () => {
         <View
           style={{
             width: width,
-            backgroundColor: '#FFF',
-            borderTopColor: '#d4d4d4',
-            borderTopWidth: 1,
+            backgroundColor: '#D3D3D388',
+            // borderTopColor: '#D3D3D388',
+            // borderTopWidth: 1,
             paddingTop: 5,
-            paddingBottom: 5
+            paddingBottom: 22,
+            display: 'flex',
+            flexDirection: 'row',
+            paddingHorizontal: 5
           }}
         >
           <View
             style={[
               styles.frow,
-              styles.jspaceBw,
               styles.pdrt10,
               styles.pdlt10,
-              { display: 'flex', alignItems: 'center' }
+              {
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#DDDDDD',
+                borderRadius: 50,
+                width: '85%',
+                justifyContent: 'space-evenly'
+              }
             ]}
           >
             <TextInput
               onChangeText={onChangeText}
               multiline={true}
-              placeholder='type your message'
+              placeholder='Message'
               value={text}
               style={{
-                height: 45,
-                width: width / 1.3
+                height: 38,
+                width: '100%'
+                // backgroundColor: 'pink'
               }}
             />
 
             {
               <>
-                {!started && (
-                  <TouchableOpacity onPress={startSpeechToText}>
-                    <FontAwesome name='microphone' size={25} />
+                {!started && !text && (
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 2,
+                      // backgroundColor: 'red',
+                      padding: 10
+                    }}
+                    onPress={startSpeechToText}
+                  >
+                    <FontAwesome name='microphone' size={22} />
                   </TouchableOpacity>
                 )}
                 {started && (
-                  <TouchableOpacity onPress={stopSpeechToText}>
-                    <Ionicons name='send' size={25} />
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: 1,
+                      padding: 7
+                      // backgroundColor: 'orange'
+                    }}
+                    onPress={stopSpeechToText}
+                  >
+                    <Ionicons name='stop-circle' size={25} color='red' />
                   </TouchableOpacity>
                 )}
               </>
             }
+          </View>
+          <View
+            style={{
+              // backgroundColor: 'brown',
+              width: '15%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <TouchableOpacity style={{ padding: 7 }} onPress={handleSend}>
+              <Ionicons name='send' size={22} />
+            </TouchableOpacity>
           </View>
         </View>
       </>
@@ -253,7 +286,7 @@ const ChatScreen = () => {
 }
 
 const messages = StyleSheet.create({
-  Chat: { maxWidth: width / 2, padding: 10 },
+  Chat: { maxWidth: width / 1.5, padding: 10 },
   myChat: {
     backgroundColor: '#aaeedd',
     borderRadius: 14
