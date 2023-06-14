@@ -18,3 +18,4 @@ https://stackoverflow.com/questions/74922152/how-to-cancel-stop-function-in-reac
 https://github.com/react-native-voice/voice/issues/107
 https://github.com/react-native-voice/voice#example
 https://github.com/react-native-voice/voice/blob/master/example/src/VoiceTest.tsx
+https://github.com/react-native-voice/voice/issues/402

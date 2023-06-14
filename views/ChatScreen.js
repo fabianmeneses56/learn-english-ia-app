@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import {
-  StyleSheet,
   Dimensions,
   FlatList,
   View,
-  Image,
-  Text,
   TouchableOpacity,
   TextInput,
   KeyboardAvoidingView
@@ -15,6 +12,7 @@ import Ionicons from '@expo/vector-icons/Ionicons'
 import Voice from '@react-native-voice/voice'
 
 import styles from '../styles/main'
+import ChatMessageComponents from '../components/ChatMessageComponents'
 
 const DATA_MESSAGES = [
   {
@@ -26,85 +24,25 @@ const DATA_MESSAGES = [
 ]
 
 const { width, height } = Dimensions.get('window')
-const Chats = ({ item }) => {
-  var state = item.sender === 'Me'
 
-  return (
-    <View
-      style={[
-        styles.pdlt10,
-        styles.mdtp10,
-        styles.mdbt10,
-        styles.pdtp10,
-        item.sender === 'Me' ? styles.frowrev : styles.frow,
-        styles.jStart
-      ]}
-    >
-      <View style={state ? styles.pdlt10 : styles.pdrt10}>
-        <Image
-          style={{ width: 40, height: 40, borderRadius: 50 }}
-          source={item.img}
-        />
-      </View>
-      <View>
-        <View
-          style={[messages.Chat, state ? messages.myChat : messages.frnChat]}
-        >
-          <Text style={{ lineHeight: 25 }}>{item.text}</Text>
-        </View>
-      </View>
-    </View>
-  )
-}
-
-// const headerComponent = () => (
-//   <View style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.94)' }}>
-//     <View
-//       style={[
-//         { paddingBottom: 20 },
-//         styles.bdbtm4,
-//         styles.bdGrey,
-//         styles.pdlt10,
-//         styles.pdrt10,
-//         styles.frow,
-//         styles.jspaceBw
-//       ]}
-//     >
-//       <View>
-//         <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{'algo aca'}</Text>
-//         <Text style={[styles.f18, styles.clBl]}>Online</Text>
-//       </View>
-//     </View>
-//   </View>
-// )
-
-// {text ? (
-//   <TouchableOpacity onPress={handleSend}>
-//     <Text style={[styles.fb, styles.clBl]}>Send</Text>
-//   </TouchableOpacity>
-// ) : (
-//   <>
-//     {!started && (
-//       <TouchableOpacity onPress={startSpeechToText}>
-//         <FontAwesome name='microphone' size={25} />
-//       </TouchableOpacity>
-//     )}
-//     {started && (
-//       <TouchableOpacity onPress={stopSpeechToText}>
-//         <Ionicons name='send' size={25} />
-//       </TouchableOpacity>
-//     )}
-//   </>
-// )}
 const ChatScreen = () => {
   const [messageArray, setMessageArray] = useState(DATA_MESSAGES)
   const [text, onChangeText] = useState('')
+
+  const [userVoice, setUserVoice] = useState('Start with the first question')
 
   const [started, setStarted] = useState(false)
   const [gptResponse, setGptResponse] = useState('')
   // const [results, setResults] = useState([])
 
   useEffect(() => {
+    // Voice.onSpeechStart = onSpeechStart
+    // Voice.onSpeechRecognized = onSpeechRecognized
+    // Voice.onSpeechEnd = onSpeechEnd
+    // // Voice.onSpeechError = this.onSpeechError;
+    // // Voice.onSpeechResults = this.onSpeechResults;
+    // Voice.onSpeechPartialResults = onSpeechPartialResults
+    // Voice.onSpeechVolumeChanged = this.onSpeechVolumeChanged;
     Voice.onSpeechError = onSpeechError
     Voice.onSpeechResults = onSpeechResults
 
@@ -112,19 +50,33 @@ const ChatScreen = () => {
       Voice.destroy().then(Voice.removeAllListeners)
     }
   }, [])
-
+  // const onSpeechStart = async e => {
+  //   console.log('onSpeechStart', e)
+  // }
+  // const onSpeechRecognized = async e => {
+  //   console.log('onSpeechRecognized', e)
+  // }
+  // const onSpeechEnd = async e => {
+  //   console.log('onSpeechEnd', e)
+  // }
+  // const onSpeechPartialResults = async e => {
+  //   console.log('onSpeechPartialResults', e)
+  // }
   const startSpeechToText = async () => {
+    // console.log('isAvailable', await Voice.isRecognizing())
     await Voice.start('en-US')
     setStarted(true)
   }
+
   const handleSend = () => {
     onChangeText('')
+    setUserVoice('')
     setStarted(false)
     setMessageArray(prev => [
       ...prev,
       {
         id: 1,
-        text: text,
+        text: userVoice,
         sender: 'Me',
         img: require('../assets/user.png')
       }
@@ -135,7 +87,7 @@ const ChatScreen = () => {
     //     Accept: 'application/json',
     //     'Content-Type': 'application/json'
     //   },
-    //   body: JSON.stringify({ userResponse: text })
+    //   body: JSON.stringify({ userResponse: userVoice })
     // })
     //   .then(response => response.json())
     //   .then(res => {
@@ -159,26 +111,31 @@ const ChatScreen = () => {
   }
   const stopSpeechToText = async () => {
     await Voice.stop()
+    await Voice.destroy().then(Voice.removeAllListeners)
     setStarted(false)
     // handleSend()
   }
 
-  const onSpeechResults = result => {
-    console.log('ACA', result)
+  const onSpeechResults = async result => {
+    // console.log('onSpeechResults', result.value[0])
     // setResults(result.value[0])
+    setUserVoice(prev => prev + ' ' + result.value[0])
     onChangeText(result.value[0])
+
+    await Voice.start('en-US')
+
+    // console.log('MESSAGE', message)
   }
 
-  // console.log(results)
-  const onSpeechError = error => {
-    console.log(error)
+  // console.log('USER VOICE', userVoice)
+  const onSpeechError = async error => {
+    Voice.cancel().then(Voice.start('en-US'))
+    console.log('onSpeechError', error)
   }
 
   const _renderMessages = ({ item }) => {
-    return <Chats item={item} />
+    return <ChatMessageComponents item={item} />
   }
-
-  // console.log(gptResponse)
 
   return (
     <KeyboardAvoidingView
@@ -191,16 +148,12 @@ const ChatScreen = () => {
           data={messageArray}
           renderItem={_renderMessages}
           keyExtractor={(item, index) => String(index)}
-          // ListHeaderComponent={headerComponent}
-          // stickyHeaderIndices={[0]}
           contentContainerStyle={{ flexGrow: 1, backgroundColor: '#D3D3D388' }}
         />
         <View
           style={{
             width: width,
             backgroundColor: '#D3D3D388',
-            // borderTopColor: '#D3D3D388',
-            // borderTopWidth: 1,
             paddingTop: 5,
             paddingBottom: 22,
             display: 'flex',
@@ -224,14 +177,13 @@ const ChatScreen = () => {
             ]}
           >
             <TextInput
-              onChangeText={onChangeText}
+              onChangeText={setUserVoice}
               multiline={true}
               placeholder='Message'
-              value={text}
+              value={userVoice}
               style={{
                 height: 38,
                 width: '100%'
-                // backgroundColor: 'pink'
               }}
             />
 
@@ -242,7 +194,6 @@ const ChatScreen = () => {
                     style={{
                       position: 'absolute',
                       right: 2,
-                      // backgroundColor: 'red',
                       padding: 10
                     }}
                     onPress={startSpeechToText}
@@ -256,7 +207,6 @@ const ChatScreen = () => {
                       position: 'absolute',
                       right: 1,
                       padding: 7
-                      // backgroundColor: 'orange'
                     }}
                     onPress={stopSpeechToText}
                   >
@@ -268,7 +218,6 @@ const ChatScreen = () => {
           </View>
           <View
             style={{
-              // backgroundColor: 'brown',
               width: '15%',
               display: 'flex',
               justifyContent: 'center',
@@ -284,17 +233,5 @@ const ChatScreen = () => {
     </KeyboardAvoidingView>
   )
 }
-
-const messages = StyleSheet.create({
-  Chat: { maxWidth: width / 1.5, padding: 10 },
-  myChat: {
-    backgroundColor: '#aaeedd',
-    borderRadius: 14
-  },
-  frnChat: {
-    backgroundColor: '#aaeeaa',
-    borderRadius: 14
-  }
-})
 
 export default ChatScreen
