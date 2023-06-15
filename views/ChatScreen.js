@@ -5,7 +5,8 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Text
 } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Ionicons from '@expo/vector-icons/Ionicons'
@@ -27,22 +28,12 @@ const { width, height } = Dimensions.get('window')
 
 const ChatScreen = () => {
   const [messageArray, setMessageArray] = useState(DATA_MESSAGES)
-  const [text, onChangeText] = useState('')
-
+  const [templatePhrase, setTemplatePhrase] = useState(true)
   const [userVoice, setUserVoice] = useState('Start with the first question')
-
   const [started, setStarted] = useState(false)
   const [gptResponse, setGptResponse] = useState('')
-  // const [results, setResults] = useState([])
 
   useEffect(() => {
-    // Voice.onSpeechStart = onSpeechStart
-    // Voice.onSpeechRecognized = onSpeechRecognized
-    // Voice.onSpeechEnd = onSpeechEnd
-    // // Voice.onSpeechError = this.onSpeechError;
-    // // Voice.onSpeechResults = this.onSpeechResults;
-    // Voice.onSpeechPartialResults = onSpeechPartialResults
-    // Voice.onSpeechVolumeChanged = this.onSpeechVolumeChanged;
     Voice.onSpeechError = onSpeechError
     Voice.onSpeechResults = onSpeechResults
 
@@ -50,28 +41,18 @@ const ChatScreen = () => {
       Voice.destroy().then(Voice.removeAllListeners)
     }
   }, [])
-  // const onSpeechStart = async e => {
-  //   console.log('onSpeechStart', e)
-  // }
-  // const onSpeechRecognized = async e => {
-  //   console.log('onSpeechRecognized', e)
-  // }
-  // const onSpeechEnd = async e => {
-  //   console.log('onSpeechEnd', e)
-  // }
-  // const onSpeechPartialResults = async e => {
-  //   console.log('onSpeechPartialResults', e)
-  // }
+
   const startSpeechToText = async () => {
-    // console.log('isAvailable', await Voice.isRecognizing())
+    setTemplatePhrase(false)
+
     await Voice.start('en-US')
     setStarted(true)
   }
 
   const handleSend = () => {
-    onChangeText('')
     setUserVoice('')
     setStarted(false)
+    setTemplatePhrase(false)
     setMessageArray(prev => [
       ...prev,
       {
@@ -79,55 +60,53 @@ const ChatScreen = () => {
         text: userVoice,
         sender: 'Me',
         img: require('../assets/user.png')
+      },
+      {
+        id: 1,
+        text: 'Loading...',
+        sender: 'ChatGPT',
+        img: require('../assets/ChatGPT_logo.png')
       }
     ])
-    // fetch('https://motivate-dev.vercel.app/api/englishia', {
-    //   method: 'POST',
-    //   headers: {
-    //     Accept: 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({ userResponse: userVoice })
-    // })
-    //   .then(response => response.json())
-    //   .then(res => {
-    //     console.log(res)
-    //     setGptResponse(res.result)
-    //     setMessageArray(prev => [
-    //       ...prev,
-    //       {
-    //         id: 1,
-    //         text: res.result,
-    //         sender: 'ChatGPT',
-    //         img: require('../assets/ChatGPT_logo.png')
-    //       }
-    //     ])
-    //   })
-    //   .catch(err => {
-    //     // setLoading(false)
-    //     // setResult('Error...')
-    //     console.log('ERROR', err)
-    //   })
+    fetch('https://motivate-dev.vercel.app/api/englishia', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ userResponse: userVoice })
+    })
+      .then(response => response.json())
+      .then(res => {
+        console.log(res)
+        setGptResponse(res.result)
+        setMessageArray(prev => prev.slice(0, -1))
+        setMessageArray(prev => [
+          ...prev,
+          {
+            id: 1,
+            text: res.result,
+            sender: 'ChatGPT',
+            img: require('../assets/ChatGPT_logo.png')
+          }
+        ])
+      })
+      .catch(err => {
+        console.log('ERROR', err)
+      })
   }
   const stopSpeechToText = async () => {
     await Voice.stop()
     await Voice.destroy().then(Voice.removeAllListeners)
     setStarted(false)
-    // handleSend()
   }
 
   const onSpeechResults = async result => {
-    // console.log('onSpeechResults', result.value[0])
-    // setResults(result.value[0])
     setUserVoice(prev => prev + ' ' + result.value[0])
-    onChangeText(result.value[0])
 
     await Voice.start('en-US')
-
-    // console.log('MESSAGE', message)
   }
 
-  // console.log('USER VOICE', userVoice)
   const onSpeechError = async error => {
     Voice.cancel().then(Voice.start('en-US'))
     console.log('onSpeechError', error)
@@ -150,6 +129,7 @@ const ChatScreen = () => {
           keyExtractor={(item, index) => String(index)}
           contentContainerStyle={{ flexGrow: 1, backgroundColor: '#D3D3D388' }}
         />
+
         <View
           style={{
             width: width,
@@ -171,25 +151,28 @@ const ChatScreen = () => {
                 alignItems: 'center',
                 backgroundColor: '#DDDDDD',
                 borderRadius: 50,
-                width: '85%',
+                width: started ? '100%' : '85%',
                 justifyContent: 'space-evenly'
               }
             ]}
           >
             <TextInput
               onChangeText={setUserVoice}
+              editable={!templatePhrase}
               multiline={true}
+              disa
               placeholder='Message'
               value={userVoice}
               style={{
                 height: 38,
-                width: '100%'
+                width: '100%',
+                color: 'black'
               }}
             />
 
             {
               <>
-                {!started && !text && (
+                {!started && !userVoice && (
                   <TouchableOpacity
                     style={{
                       position: 'absolute',
@@ -216,18 +199,20 @@ const ChatScreen = () => {
               </>
             }
           </View>
-          <View
-            style={{
-              width: '15%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}
-          >
-            <TouchableOpacity style={{ padding: 7 }} onPress={handleSend}>
-              <Ionicons name='send' size={22} />
-            </TouchableOpacity>
-          </View>
+          {!started && (
+            <View
+              style={{
+                width: '15%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <TouchableOpacity style={{ padding: 7 }} onPress={handleSend}>
+                <Ionicons name='send' size={22} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </>
     </KeyboardAvoidingView>

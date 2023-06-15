@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Dimensions, View, Image, Text } from 'react-native'
 
 import styles from '../styles/main'
@@ -6,8 +6,21 @@ import styles from '../styles/main'
 const { width, height } = Dimensions.get('window')
 
 const ChatMessageComponents = ({ item }) => {
+  const [index, setIndex] = useState(0)
+  const [text, setText] = useState('')
+
   var state = item.sender === 'Me'
 
+  useEffect(() => {
+    if (index < item.text.length && !state) {
+      setTimeout(() => {
+        setText(text + item.text[index])
+        setIndex(index + 1)
+      }, 0.3)
+    } else {
+      setText(item.text)
+    }
+  }, [index, item.text])
   return (
     <View
       style={[
@@ -29,7 +42,7 @@ const ChatMessageComponents = ({ item }) => {
         <View
           style={[messages.Chat, state ? messages.myChat : messages.frnChat]}
         >
-          <Text style={{ lineHeight: 25 }}>{item.text}</Text>
+          <Text style={{ lineHeight: 25 }}>{text}</Text>
         </View>
       </View>
     </View>
