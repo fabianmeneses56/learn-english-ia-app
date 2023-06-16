@@ -3,13 +3,13 @@ import { StyleSheet, Dimensions, View, Image, Text } from 'react-native'
 
 import styles from '../styles/main'
 
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 const ChatMessageComponents = ({ item }) => {
   const [index, setIndex] = useState(0)
   const [text, setText] = useState('')
 
-  var state = item.sender === 'Me'
+  const state = item.sender === 'Me'
 
   useEffect(() => {
     if (index < item.text.length && !state) {

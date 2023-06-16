@@ -19,3 +19,11 @@ https://github.com/react-native-voice/voice/issues/107
 https://github.com/react-native-voice/voice#example
 https://github.com/react-native-voice/voice/blob/master/example/src/VoiceTest.tsx
 https://github.com/react-native-voice/voice/issues/402
+
+https://getstream.io/chat/react-native-chat/tutorial/
+https://www.headway.io/blog/react-native-quick-start-expo-eslint-typescript-and-prettier
+https://github.com/ricardofbarros/linter-js-standard
+https://manurana.medium.com/linting-formatting-in-react-and-react-native-92d7d19cc9eb
+https://stackoverflow.com/questions/70386909/problem-with-babel-eslint-parsing-error-require-of-es-module
+https://manurana.medium.com/linting-formatting-in-react-and-react-native-92d7d19cc9eb
+https://dev.to/risafj/how-to-set-up-eslint-with-standardjs-for-a-new-react-native-typescript-project-ebl

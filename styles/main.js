@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native'
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
 
 module.exports = StyleSheet.create({
   container: {
@@ -9,7 +9,7 @@ module.exports = StyleSheet.create({
     justifyContent: 'center'
   },
   divider: {
-    width: width,
+    width,
     height: 30,
     backgroundColor: '#d2d2d2'
   },

@@ -1,0 +1,6 @@
+{
+  "extends": ["standard", "standard-jsx", "standard-react"],
+  "rules": {
+    "react/prop-types": "off"
+  }
+}
